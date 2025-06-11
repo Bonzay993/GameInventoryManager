@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Inventory</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    #searchBar {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+    #gameList {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .gameItem {
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .addForm input {
+      margin-right: 10px;
+      padding: 5px;
+    }
+    .addForm button {
+      padding: 5px 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>My Game Inventory</h1>
+  <input type="text" id="searchBar" placeholder="Search for a game..." onkeyup="searchGames()">
+
+  <div class="addForm">
+    <input type="text" id="gameName" placeholder="Game Name">
+    <input type="text" id="platform" placeholder="Platform (e.g. PS1, Xbox)">
+    <button onclick="addGame()">Add Game</button>
+  </div>
+
+  <div id="gameList"></div>
+
+  <script>
+    async function fetchGames() {
+      const res = await fetch('/games');
+      const games = await res.json();
+      displayGames(games);
+    }
+
+    function displayGames(games) {
+      const list = document.getElementById('gameList');
+      list.innerHTML = '';
+      games.forEach(game => {
+        const item = document.createElement('div');
+        item.className = 'gameItem';
+        item.textContent = `${game.name} [${game.platform}]`;
+        list.appendChild(item);
+      });
+    }
+
+    async function searchGames() {
+      const query = document.getElementById('searchBar').value;
+      const res = await fetch(`/search?query=${query}`);
+      const games = await res.json();
+      displayGames(games);
+    }
+
+    async function addGame() {
+      const name = document.getElementById('gameName').value;
+      const platform = document.getElementById('platform').value;
+      await fetch('/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, platform })
+      });
+      fetchGames();
+    }
+
+    fetchGames();
+  </script>
+</body>
+</html>
