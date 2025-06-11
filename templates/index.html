@@ -9,116 +9,28 @@
 </head>
 <body>
   <h1>🎮 Game Inventory Manager</h1>
-  <div id="toast" class="toast"></div>
+  
 
   <input type="text" id="searchBar" placeholder="Search for a game..." onkeyup="searchGames()" />
+<div class="addForm">
+  <input type="text" id="gameName" placeholder="Game Name">
+  <input type="text" id="platform" placeholder="Platform (e.g. PS1, Xbox)">
+  <button onclick="addGame()">Add Game</button>
 
-  <div class="addForm">
-    <input type="text" id="gameName" placeholder="Game Name" />
-    <input type="text" id="platform" placeholder="Platform (e.g. PS5, Xbox)" />
-    <button onclick="addGame()">Add Game</button>
+  <div id="toast" class="toast" onclick="hideToast()">
+    <span id="toast-icon">✔️</span>
+    <span id="toast-message"></span>
   </div>
+  <div id="confirm-toast" class="toast confirm-toast" style="display:none;">
+  <span id="confirm-message">Are you sure you want to delete this game?</span>
+  <button id="confirm-yes" class="confirm-btn">Yes</button>
+  <button id="confirm-no" class="confirm-btn">No</button>
+</div>
+</div>
 
   <div id="gameList"></div>
 
 
   <script src="{{ url_for('static', filename='scripts/script.js') }}"></script>
-
-  <script>
-
-
-
-  async function fetchGames() {
-    const res = await fetch('/games');
-    const games = await res.json();
-    displayGames(games);
-  }
-
-  function displayGames(games) {
-    const list = document.getElementById('gameList');
-    list.innerHTML = '';
-    if (games.length === 0) {
-      list.innerHTML = '<p>No games found.</p>';
-      return;
-    }
-    games.forEach(game => {
-      const item = document.createElement('div');
-      item.className = 'gameItem';
-
-      const name = document.createElement('div');
-      name.textContent = `${game.name} [${game.platform}]`;
-
-      const btn = document.createElement('button');
-      btn.textContent = 'Delete';
-      btn.style.marginTop = '10px';
-      btn.style.backgroundColor = '#ff4d4d';
-      btn.style.color = '#fff';
-      btn.style.border = 'none';
-      btn.style.padding = '6px 12px';
-      btn.style.borderRadius = '5px';
-      btn.style.cursor = 'pointer';
-      btn.onclick = () => deleteGame(game._id.$oid);
-
-      item.appendChild(name);
-      item.appendChild(btn);
-      list.appendChild(item);
-    });
-  }
-
-  async function deleteGame(id) {
-    const confirmed = confirm("Are you sure you want to delete this game?");
-    if (!confirmed) return;
-
-    const res = await fetch(`/delete/${id}`, {
-      method: 'DELETE'
-    });
-
-    if (res.ok) {
-      fetchGames();
-    } else {
-      alert("Failed to delete game.");
-    }
-  }
-
-  async function searchGames() {
-    const query = document.getElementById('searchBar').value.trim();
-    if (query === '') {
-      fetchGames();
-      return;
-    }
-
-    const res = await fetch(`/search?query=${encodeURIComponent(query)}`);
-    const games = await res.json();
-    displayGames(games);
-  }
-
-  async function addGame() {
-    const name = document.getElementById('gameName').value.trim();
-    const platform = document.getElementById('platform').value.trim();
-
-    if (!name || !platform) {
-      alert("Please enter both a game name and platform.");
-      return;
-    }
-
-    const res = await fetch('/add', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, platform })
-    });
-
-    const result = await res.json();
-
-    if (res.ok) {
-      document.getElementById('gameName').value = '';
-      document.getElementById('platform').value = '';
-      fetchGames();
-    } else {
-      alert(result.message || "Error adding game.");
-    }
-  }
-
-  fetchGames();
-</script>
 </body>
 </html>

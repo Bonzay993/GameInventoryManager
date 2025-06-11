@@ -68,6 +68,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 15px;
+      margin-top:10%;
     }
 
     .gameItem {
@@ -83,28 +84,78 @@
     .gameItem:hover {
       transform: scale(1.03);
     }
+.addForm {
+  position: relative;
+  margin-bottom: 40px; /* add some spacing below */
+}
 
-    .toast {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background: #323232;
-      color: #fff;
-      padding: 12px 20px;
-      border-radius: 8px;
-      opacity: 0;
-      transition: opacity 0.5s, transform 0.5s;
-      transform: translateY(20px);
-      z-index: 1000;
-  }
+.toast {
+  position: absolute;
+  bottom: -50px; /* right below the form */
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  max-width: 300px;
+  cursor: pointer;
+  /* keep existing styles */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s, transform 0.4s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  margin-top:30px;
+}
 
-  .toast.show {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+.toast.success {
+  background-color: #28a745;
+}
+
+.toast.error {
+  background-color: #dc3545;
+}
 
     p {
       text-align: center;
       font-size: 1.2rem;
       color: var(--error);
     }
+
+ .confirm-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  
+  transform: translateX(-50%);
+  background-color: #444;
+  gap: 15px;
+  justify-content: space-between;
+  padding: 12px 20px;
+  max-width: 400px;
+  z-index: 10000;
+}
+
+.confirm-btn {
+  background: #222;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.confirm-btn:hover {
+  background-color: #555;
+}
