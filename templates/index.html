@@ -1,91 +1,209 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Game Inventory</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-color: #121212;
+      --card-bg: #1e1e1e;
+      --accent: #00ffcc;
+      --text-color: #f1f1f1;
+      --error: #ff4d4d;
+    }
+
     body {
-      font-family: Arial, sans-serif;
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
       padding: 20px;
     }
+
     h1 {
       text-align: center;
+      font-size: 2.5rem;
+      color: var(--accent);
+      margin-bottom: 30px;
     }
+
     #searchBar {
       width: 100%;
-      padding: 10px;
-      margin-bottom: 20px;
-      font-size: 16px;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      font-size: 1rem;
+      background-color: #2a2a2a;
+      color: var(--text-color);
     }
-    #gameList {
+
+    .addForm {
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       gap: 10px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
     }
-    .gameItem {
-      border: 1px solid #ccc;
-      padding: 10px;
-      border-radius: 5px;
+
+    .addForm input, .addForm button {
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
     }
+
     .addForm input {
-      margin-right: 10px;
-      padding: 5px;
+      background-color: #2a2a2a;
+      color: var(--text-color);
+      min-width: 200px;
     }
+
     .addForm button {
-      padding: 5px 10px;
+      background-color: var(--accent);
+      color: #000;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .addForm button:hover {
+      background-color: #00e6b8;
+    }
+
+    #gameList {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+    }
+
+    .gameItem {
+      background-color: var(--card-bg);
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #2d2d2d;
+      box-shadow: 0 4px 10px rgba(0, 255, 204, 0.1);
+      font-size: 1.1rem;
+      transition: transform 0.2s ease;
+    }
+
+    .gameItem:hover {
+      transform: scale(1.03);
+    }
+
+    p {
+      text-align: center;
+      font-size: 1.2rem;
+      color: var(--error);
     }
   </style>
 </head>
 <body>
-  <h1>My Game Inventory</h1>
-  <input type="text" id="searchBar" placeholder="Search for a game..." onkeyup="searchGames()">
+  <h1>🎮 Game Inventory Manager</h1>
+
+  <input type="text" id="searchBar" placeholder="Search for a game..." onkeyup="searchGames()" />
 
   <div class="addForm">
-    <input type="text" id="gameName" placeholder="Game Name">
-    <input type="text" id="platform" placeholder="Platform (e.g. PS1, Xbox)">
+    <input type="text" id="gameName" placeholder="Game Name" />
+    <input type="text" id="platform" placeholder="Platform (e.g. PS5, Xbox)" />
     <button onclick="addGame()">Add Game</button>
   </div>
 
   <div id="gameList"></div>
 
   <script>
-    async function fetchGames() {
-      const res = await fetch('/games');
-      const games = await res.json();
-      displayGames(games);
-    }
+  async function fetchGames() {
+    const res = await fetch('/games');
+    const games = await res.json();
+    displayGames(games);
+  }
 
-    function displayGames(games) {
-      const list = document.getElementById('gameList');
-      list.innerHTML = '';
-      games.forEach(game => {
-        const item = document.createElement('div');
-        item.className = 'gameItem';
-        item.textContent = `${game.name} [${game.platform}]`;
-        list.appendChild(item);
-      });
+  function displayGames(games) {
+    const list = document.getElementById('gameList');
+    list.innerHTML = '';
+    if (games.length === 0) {
+      list.innerHTML = '<p>No games found.</p>';
+      return;
     }
+    games.forEach(game => {
+      const item = document.createElement('div');
+      item.className = 'gameItem';
 
-    async function searchGames() {
-      const query = document.getElementById('searchBar').value;
-      const res = await fetch(`/search?query=${query}`);
-      const games = await res.json();
-      displayGames(games);
-    }
+      const name = document.createElement('div');
+      name.textContent = `${game.name} [${game.platform}]`;
 
-    async function addGame() {
-      const name = document.getElementById('gameName').value;
-      const platform = document.getElementById('platform').value;
-      await fetch('/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, platform })
-      });
+      const btn = document.createElement('button');
+      btn.textContent = 'Delete';
+      btn.style.marginTop = '10px';
+      btn.style.backgroundColor = '#ff4d4d';
+      btn.style.color = '#fff';
+      btn.style.border = 'none';
+      btn.style.padding = '6px 12px';
+      btn.style.borderRadius = '5px';
+      btn.style.cursor = 'pointer';
+      btn.onclick = () => deleteGame(game._id.$oid);
+
+      item.appendChild(name);
+      item.appendChild(btn);
+      list.appendChild(item);
+    });
+  }
+
+  async function deleteGame(id) {
+    const confirmed = confirm("Are you sure you want to delete this game?");
+    if (!confirmed) return;
+
+    const res = await fetch(`/delete/${id}`, {
+      method: 'DELETE'
+    });
+
+    if (res.ok) {
       fetchGames();
+    } else {
+      alert("Failed to delete game.");
+    }
+  }
+
+  async function searchGames() {
+    const query = document.getElementById('searchBar').value.trim();
+    if (query === '') {
+      fetchGames();
+      return;
     }
 
-    fetchGames();
-  </script>
+    const res = await fetch(`/search?query=${encodeURIComponent(query)}`);
+    const games = await res.json();
+    displayGames(games);
+  }
+
+  async function addGame() {
+    const name = document.getElementById('gameName').value.trim();
+    const platform = document.getElementById('platform').value.trim();
+
+    if (!name || !platform) {
+      alert("Please enter both a game name and platform.");
+      return;
+    }
+
+    const res = await fetch('/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, platform })
+    });
+
+    const result = await res.json();
+
+    if (res.ok) {
+      document.getElementById('gameName').value = '';
+      document.getElementById('platform').value = '';
+      fetchGames();
+    } else {
+      alert(result.message || "Error adding game.");
+    }
+  }
+
+  fetchGames();
+</script>
 </body>
 </html>
