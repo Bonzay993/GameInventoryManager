@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const list = document.getElementById('gameList');
     list.innerHTML = '';
     if (games.length === 0) {
-      list.innerHTML = '<p>No games found.</p>';
+      list.innerHTML = '<p class="no-games">No games found.</p>';
       return;
     }
 
