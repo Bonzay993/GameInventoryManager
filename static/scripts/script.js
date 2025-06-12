@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const name = document.createElement('div');
       name.textContent = `${game.name} [${game.platform}]`;
-      name.className ='gameItem-text'
+      name.className = 'gameItem-text';
 
       const btn = document.createElement('button');
       btn.textContent = 'Delete';
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function searchGames() {
     const query = document.getElementById('searchBar').value.trim();
-    const platform = document.getElementById('platformSearch').value.trim();
+    const platform = document.getElementById('platform').value;
 
     let url = '/search?';
     if (query) url += `query=${encodeURIComponent(query)}&`;
@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.getElementById('searchBar').addEventListener('keyup', searchGames);
-  document.getElementById('platformSearch').addEventListener('keyup', searchGames);
+  document.getElementById('platformSearch').addEventListener('change', searchGames);  // changed here
   document.getElementById('addGameBtn').addEventListener('click', addGame);
 
   fetchGames();

@@ -12,12 +12,39 @@
   
   <div id="searchContainer">
     <input type="text" id="searchBar" placeholder="Search for a game..." />
-    <input type="text" id="platformSearch" placeholder="Filter by platform..." />
+    <select id="platformSearch">
+        <option value="" disabled selected>Platform (e.g. PS1, Xbox)</option>
+        <option value="PS1">PS1</option>
+        <option value="PS2">PS2</option>
+        <option value="PS3">PS3</option>
+        <option value="PS4">PS4</option>
+        <option value="PS5">PS5</option>
+        <option value="OG XBOX">OG XBOX</option>
+        <option value="XBOX 360">XBOX 360</option>
+        <option value="XBOX ONE">XBOX ONE</option>
+        <option value="SERIES S">SERIES S</option>
+        <option value="SERIES X">SERIES X</option>
+        <option value="Nintendo Switch">Nintendo Switch</option>
+    </select>
   </div>
 
   <div class="addForm">
     <input type="text" class="gamename" id="gameName" placeholder="Game Name">
-    <input type="text" class="platform" id="platform" placeholder="Platform (e.g. PS1, Xbox)">
+    <select class="platform" id="platform">
+        <option value="" disabled selected>Platform (e.g. PS1, Xbox)</option>
+        <option value="PS1">PS1</option>
+        <option value="PS2">PS2</option>
+        <option value="PS3">PS3</option>
+        <option value="PS4">PS4</option>
+        <option value="PS5">PS5</option>
+        <option value="OG XBOX">OG XBOX</option>
+        <option value="XBOX 360">XBOX 360</option>
+        <option value="XBOX ONE">XBOX ONE</option>
+        <option value="SERIES S">SERIES S</option>
+        <option value="SERIES X">SERIES X</option>
+        <option value="Nintendo Switch">Nintendo Switch</option>
+    </select>
+
     <input type="text" id="imageUrl" placeholder="Image URL (optional)">
     <button id="addGameBtn">Add Game</button>
 
@@ -25,10 +52,12 @@
       <span id="toast-icon">✔️</span>
       <span id="toast-message"></span>
     </div>
-    <div id="confirm-toast" class="toast confirm-toast" style="display:none;">
+    <div id="confirm-toast" class="confirm-toast" style="display:none;">
       <span id="confirm-message">Are you sure you want to delete this game?</span>
-      <button id="confirm-yes" class="confirm-btn">Yes</button>
-      <button id="confirm-no" class="confirm-btn">No</button>
+      <div class="button-container">
+          <button id="confirm-yes" class="confirm-btn">Yes</button>
+          <button id="confirm-no" class="confirm-btn">No</button>
+      </div>
     </div>
   </div>
 
