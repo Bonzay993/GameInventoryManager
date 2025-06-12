@@ -6,14 +6,15 @@
   --error: #ff4d4d;
 }
 
+/* Replace solid bg with dark teal gradient */
 body {
   margin: 0;
   font-family: 'Orbitron', sans-serif;
-  background-color: var(--bg-color);
+  /* Radial gradient background - dark teal shades */
+  background: radial-gradient(circle at center, #204051, #0f2027 70%, #203a43 100%);
   color: var(--text-color);
   padding: 20px;
 }
-
 h1 {
   text-align: center;
   font-size: 2.5rem;
@@ -55,7 +56,7 @@ h1 {
   width: 48%;
   min-width: 150px !important;
   margin: 0 auto;
-  margin-bottom: 2%;
+  
 }
 
 #platformSearch {
