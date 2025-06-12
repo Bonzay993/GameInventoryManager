@@ -53,35 +53,35 @@ h1 {
 
 .addForm {
   display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 40px;
   flex-wrap: wrap;
-  position: relative;
-  width: 50%;
-  margin:0 auto;
+  justify-content: center;
+  gap: 12px;
+  margin: 20px auto 40px auto;
+  max-width: 100%;
+  padding: 0 10px;
 }
 
-.addForm input,
-.addForm button {
-  padding: 12px;
+.addForm input, .addForm button {
+  padding: 12px 16px;
   font-size: 1rem;
   border-radius: 8px;
   border: none;
+  flex: 1 1 250px;
+  min-width: 200px;
+  box-sizing: border-box;
 }
 
 .addForm input {
   background-color: #2a2a2a;
   color: var(--text-color);
-  min-width: 200px;
-  flex: 1 1 200px;
+  border: 1px solid #444;
 }
 
 .addForm button {
   background-color: var(--accent);
   color: #000;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 .addForm button:hover {
@@ -232,7 +232,7 @@ p {
 
   #searchBar,
   #platformSearch {
-    width: 100% !important;
+    width: 90% !important;
   }
 
   .addForm {
@@ -257,6 +257,13 @@ p {
   }
 }
 
+
+@media (max-width: 600px) {
+  .addForm input, .addForm button {
+    flex: 1 1 100%;
+  }
+}
+
 @media (max-width: 480px) {
   h1 {
     font-size: 1.6rem;
@@ -271,4 +278,6 @@ p {
   .gameItem img {
     height: 180px;
   }
+
+  
 }
