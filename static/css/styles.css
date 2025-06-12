@@ -6,57 +6,45 @@
   --error: #ff4d4d;
 }
 
-/* Replace solid bg with dark teal gradient */
 body {
   margin: 0;
   font-family: 'Orbitron', sans-serif;
-  /* Radial gradient background - dark teal shades */
-  background: radial-gradient(circle at center, #204051, #0f2027 70%, #203a43 100%);
+  background: radial-gradient(circle at top left, #1e2a38, #0f2027);
   color: var(--text-color);
-  padding: 20px;
-}
-h1 {
-  text-align: center;
-  font-size: 2.5rem;
-  color: var(--accent);
-  margin-bottom: 30px;
+  padding: 2vw;
 }
 
-#searchBar {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
+h1 {
+  text-align: center;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  color: var(--accent);
   margin-bottom: 30px;
-  font-size: 1rem;
-  background-color: #2a2a2a;
-  color: var(--text-color);
 }
 
 #searchContainer {
   background-color: #222;
   padding: 10px;
   border-radius: 10px;
-  display: flex !important;
-  gap: 10px !important;
-  margin-bottom: 20px !important;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
   width: 60%;
-  margin: 0 auto;
+  margin: 0 auto 20px auto;
 }
 
 #searchBar, #platformSearch {
-  outline: 2px solid lime !important;
-  background-color: #333 !important;
-  min-height: 40px !important;
-  font-size: 1.2rem !important;
-  flex: 1 1 auto !important;
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  width: 48%;
-  min-width: 150px !important;
+  outline: 2px solid lime;
+  background-color: #333;
+  color: var(--text-color);
+  font-size: 1.2rem;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  flex: 1 1 auto;
+  min-width: 150px;
+  min-height: 40px;
   margin: 0 auto;
-  
+  width: 48%;
 }
 
 #platformSearch {
@@ -67,13 +55,15 @@ h1 {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   flex-wrap: wrap;
   position: relative;
-  margin-bottom: 40px; /* add some spacing below */
+  width: 50%;
+  margin:0 auto;
 }
 
-.addForm input, .addForm button {
+.addForm input,
+.addForm button {
   padding: 12px;
   font-size: 1rem;
   border-radius: 8px;
@@ -84,6 +74,7 @@ h1 {
   background-color: #2a2a2a;
   color: var(--text-color);
   min-width: 200px;
+  flex: 1 1 200px;
 }
 
 .addForm button {
@@ -111,62 +102,41 @@ h1 {
   border: 1px solid #2d2d2d;
   box-shadow: 0 4px 10px rgba(0, 255, 204, 0.1);
   font-size: 1.1rem;
-
   display: flex;
   flex-direction: column;
-  height: 380px; /* fixed height for uniformity */
-
-  transform-origin: center center;
-  will-change: transform;
+  height: 380px;
   transition: transform 0.2s ease;
 }
-
-#gameList:has(.no-games) {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 50vh; /* Adjust for vertical centering */
-  
-}
-
-.no-games {
-  font-size: 1.4rem;
-  color: var(--error);
-  text-align: center;
-}
-  
 
 .gameItem:hover {
   transform: scale(1.03);
 }
 
-/* Make image take up fixed height and keep aspect ratio */
 .gameItem img {
   width: 100%;
-  height: 250px; /* fixed height */
-  object-fit: contain; /* keeps aspect ratio, fits inside */
+  height: 250px;
+  object-fit: contain;
   border-radius: 10px;
   margin-bottom: 10px;
   flex-shrink: 0;
 }
 
-.gameItem-text{
-  margin:0 auto;
+.gameItem-text {
+  margin: 0 auto;
+  text-align: center;
 }
 
-/* Name and platform text */
 .gameItem > div:first-of-type {
-  flex-grow: 1; /* push delete button to bottom */
+  flex-grow: 1;
 }
 
-/* Delete button styling */
 .gameItem button {
-  margin-top: auto; /* push to bottom */
-  background-color: #ff4d4d;
+  margin-top: auto;
+  background-color: var(--error);
   color: #fff;
-  border: none;
   padding: 6px 12px;
   border-radius: 5px;
+  border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -177,24 +147,23 @@ h1 {
 
 .toast {
   position: absolute;
-  bottom: -80px; /* right below the form */
+  bottom: -50px;
   left: 0;
   right: 0;
   margin: 0 auto;
   max-width: 300px;
-  cursor: pointer;
-
+  padding: 12px 20px;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 20px;
   border-radius: 8px;
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.4s, transform 0.4s;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   z-index: 1000;
-  
+  cursor: pointer;
+  margin-top: 30px;
 }
 
 .toast.show {
@@ -216,6 +185,13 @@ p {
   color: var(--error);
 }
 
+.no-games-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--error);
+  margin-top: 5%;
+}
+
 .confirm-toast {
   position: fixed;
   bottom: 20px;
@@ -227,6 +203,9 @@ p {
   padding: 12px 20px;
   max-width: 400px;
   z-index: 10000;
+  display: flex;
+  border-radius: 8px;
+  align-items: center;
 }
 
 .confirm-btn {
@@ -242,4 +221,54 @@ p {
 
 .confirm-btn:hover {
   background-color: #555;
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+  #searchContainer {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  #searchBar,
+  #platformSearch {
+    width: 100% !important;
+  }
+
+  .addForm {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .gameItem {
+    height: auto;
+    font-size: 1rem;
+  }
+
+  .gameItem img {
+    height: 200px;
+  }
+
+  .toast,
+  .confirm-toast {
+    max-width: 90%;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  .addForm input,
+  .addForm button {
+    font-size: 1rem;
+    padding: 10px;
+  }
+
+  .gameItem img {
+    height: 180px;
+  }
 }
