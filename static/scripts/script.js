@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   let gameIdToDelete = null;
 
-  const RAWG_API_KEY = 'df23d9d8129541199e5b8fce67dfaf6e'; // <-- replace with your RAWG API key
-  const PLACEHOLDER_IMG = 'https://via.placeholder.com/250x140?text=No+Image'; // fallback image
+  const PLACEHOLDER_IMG = '/static/img/no-image.png'; // <-- use local image
 
   function showToast(message, type = 'success', duration = 3000) {
     const toast = document.getElementById('toast');
@@ -23,10 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showConfirmDelete(id) {
-    console.log('showConfirmDelete called with ID:', id);
     gameIdToDelete = id;
     const confirmToast = document.getElementById('confirm-toast');
-
     confirmToast.style.display = 'flex';
     confirmToast.classList.add('show');
   }
@@ -39,18 +36,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.getElementById('confirm-yes').addEventListener('click', async () => {
-    console.log('Yes button clicked. ID to delete:', gameIdToDelete);
     if (!gameIdToDelete) return;
-
     const res = await fetch(`/delete/${gameIdToDelete}`, { method: 'DELETE' });
-    console.log('Delete response status:', res.status);
 
     if (res.ok) {
       showToast("Game deleted.", 'success');
       fetchGames();
     } else {
       const error = await res.json();
-      console.error('Delete failed:', error);
       showToast(error.message || "Failed to delete game.", 'error');
     }
 
@@ -61,21 +54,19 @@ document.addEventListener('DOMContentLoaded', () => {
     hideConfirmToast();
   });
 
-  async function fetchGameImage(name, platform) {
-    try {
-      const query = encodeURIComponent(name);
-      const url = `https://api.rawg.io/api/games?key=${RAWG_API_KEY}&search=${query}&page_size=1`;
-      const res = await fetch(url);
-      if (!res.ok) return null;
-      const data = await res.json();
-      if (data.results && data.results.length > 0) {
-        return data.results[0].background_image || null;
-      }
-    } catch (error) {
-      console.error('Error fetching game image:', error);
+async function fetchGameImage(name) {
+  try {
+    const res = await fetch(`/game-image?name=${encodeURIComponent(name)}`);
+    if (!res.ok) {
+      return null;
     }
+    const data = await res.json();
+    return data.image || null;
+  } catch (error) {
+    // Suppress console error
     return null;
   }
+}
 
   async function fetchGames() {
     const res = await fetch('/games');
@@ -95,16 +86,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const item = document.createElement('div');
       item.className = 'gameItem';
 
-      // Create and set up image element
       const img = document.createElement('img');
       img.alt = `${game.name} cover`;
       img.style.width = '100%';
       img.style.borderRadius = '10px';
       img.style.marginBottom = '10px';
 
-      // Fetch image from RAWG API
-      const imageUrl = await fetchGameImage(game.name, game.platform);
+      const imageUrl = await fetchGameImage(game.name);
       img.src = imageUrl || PLACEHOLDER_IMG;
+
+      img.onerror = () => {
+        img.src = PLACEHOLDER_IMG;
+      };
 
       const name = document.createElement('div');
       name.textContent = `${game.name} [${game.platform}]`;
@@ -120,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.style.cursor = 'pointer';
 
       btn.onclick = () => {
-        console.log('Delete button clicked for ID:', game._id);
         showConfirmDelete(game._id["$oid"]);
       };
 
