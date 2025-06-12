@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   let gameIdToDelete = null;
-
-  const PLACEHOLDER_IMG = '/static/img/no-image.png'; // <-- use local image
+  const PLACEHOLDER_IMG = '/static/img/no-image.png';
 
   function showToast(message, type = 'success', duration = 3000) {
     const toast = document.getElementById('toast');
@@ -54,16 +53,18 @@ document.addEventListener('DOMContentLoaded', () => {
     hideConfirmToast();
   });
 
+const imageCache = {};
+
 async function fetchGameImage(name) {
+  if (imageCache[name]) return imageCache[name];
+
   try {
     const res = await fetch(`/game-image?name=${encodeURIComponent(name)}`);
-    if (!res.ok) {
-      return null;
-    }
+    if (!res.ok) return null;
     const data = await res.json();
-    return data.image || null;
+    imageCache[name] = data.image || null;
+    return imageCache[name];
   } catch (error) {
-    // Suppress console error
     return null;
   }
 }
@@ -125,12 +126,13 @@ async function fetchGameImage(name) {
 
   async function searchGames() {
     const query = document.getElementById('searchBar').value.trim();
-    if (query === '') {
-      fetchGames();
-      return;
-    }
+    const platform = document.getElementById('platformSearch').value.trim();
 
-    const res = await fetch(`/search?query=${encodeURIComponent(query)}`);
+    let url = '/search?';
+    if (query) url += `query=${encodeURIComponent(query)}&`;
+    if (platform) url += `platform=${encodeURIComponent(platform)}`;
+
+    const res = await fetch(url);
     const games = await res.json();
     displayGames(games);
   }
@@ -162,8 +164,15 @@ async function fetchGameImage(name) {
     }
   }
 
+  // Add event listeners here instead of inline HTML handlers
   document.getElementById('searchBar').addEventListener('keyup', searchGames);
+  document.getElementById('platformSearch').addEventListener('keyup', searchGames);
+
   document.querySelector('button[onclick="addGame()"]').addEventListener('click', addGame);
 
   fetchGames();
+
+  // Expose addGame for inline button
+  window.addGame = addGame;
+  window.hideToast = hideToast;
 });

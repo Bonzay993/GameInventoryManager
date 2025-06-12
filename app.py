@@ -52,8 +52,22 @@ def get_game_image():
 
 @app.route('/search', methods=['GET'])
 def search_games():
-    query = request.args.get('query', '').lower()
-    results = list(games_collection.find({"name": {"$regex": query, "$options": "i"}}))
+    query = request.args.get('query', '').strip()
+    platform = request.args.get('platform', '').strip()
+
+    mongo_query = {}
+
+    if query:
+        mongo_query["name"] = {"$regex": query, "$options": "i"}
+
+    if platform:
+        mongo_query["platform"] = {"$regex": platform, "$options": "i"}
+
+    print("Mongo query:", mongo_query)  # Add this line
+
+    results = list(games_collection.find(mongo_query))
+    print(f"Found {len(results)} results")  # And this
+
     return dumps(results), 200, {'Content-Type': 'application/json'}
 
 @app.route('/add', methods=['POST'])
