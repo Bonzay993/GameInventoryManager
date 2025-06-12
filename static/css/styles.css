@@ -192,14 +192,7 @@ p {
   color: var(--error);
 }
 
-.no-games {
-  text-align: center;
-  font-size: 1.2rem;
-  color: var(--error);
-  margin-top: 5%;
-  margin:0 auto;
-  align-items: center;
-}
+
 
 
 
@@ -253,6 +246,19 @@ p {
 
 .confirm-btn:hover {
   background-color: #555;
+}
+
+#gameList.no-games {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 7vh; /* Adjust this value as needed */
+  min-height: 60vh;
+}
+
+#gameList.no-games p {
+  font-size: 1.5rem;
+  color: var(--error);
 }
 
 /* Responsive Enhancements */
