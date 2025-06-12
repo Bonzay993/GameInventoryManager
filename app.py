@@ -69,5 +69,5 @@ def delete_game(game_id):
         return jsonify({"status": "error", "message": "Game not found"}), 404
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))  # use PORT env var from Heroku
+    port = int(os.environ.get("PORT"))  # use PORT env var from Heroku
     app.run(host='0.0.0.0', port=port)
