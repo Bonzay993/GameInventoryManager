@@ -53,21 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
     hideConfirmToast();
   });
 
-const imageCache = {};
-
-async function fetchGameImage(name) {
-  if (imageCache[name]) return imageCache[name];
-
-  try {
-    const res = await fetch(`/game-image?name=${encodeURIComponent(name)}`);
-    if (!res.ok) return null;
-    const data = await res.json();
-    imageCache[name] = data.image || null;
-    return imageCache[name];
-  } catch (error) {
-    return null;
+  async function fetchGameImage(game) {
+    if (game.image_url) return game.image_url;
+    return PLACEHOLDER_IMG;
   }
-}
 
   async function fetchGames() {
     const res = await fetch('/games');
@@ -93,7 +82,7 @@ async function fetchGameImage(name) {
       img.style.borderRadius = '10px';
       img.style.marginBottom = '10px';
 
-      const imageUrl = await fetchGameImage(game.name);
+      const imageUrl = await fetchGameImage(game);
       img.src = imageUrl || PLACEHOLDER_IMG;
 
       img.onerror = () => {
@@ -102,6 +91,7 @@ async function fetchGameImage(name) {
 
       const name = document.createElement('div');
       name.textContent = `${game.name} [${game.platform}]`;
+      name.className ='gameItem-text'
 
       const btn = document.createElement('button');
       btn.textContent = 'Delete';
@@ -140,6 +130,7 @@ async function fetchGameImage(name) {
   async function addGame() {
     const name = document.getElementById('gameName').value.trim();
     const platform = document.getElementById('platform').value.trim();
+    const imageUrl = document.getElementById('imageUrl').value.trim();
 
     if (!name || !platform) {
       showToast("Please enter both a game name and platform.", 'error');
@@ -149,7 +140,7 @@ async function fetchGameImage(name) {
     const res = await fetch('/add', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, platform })
+      body: JSON.stringify({ name, platform, image_url: imageUrl || null })
     });
 
     const result = await res.json();
@@ -158,21 +149,19 @@ async function fetchGameImage(name) {
       showToast("Game added successfully!", 'success');
       document.getElementById('gameName').value = '';
       document.getElementById('platform').value = '';
+      document.getElementById('imageUrl').value = '';
       fetchGames();
     } else {
       showToast(result.message || "Error adding game.", 'error');
     }
   }
 
-  // Add event listeners here instead of inline HTML handlers
   document.getElementById('searchBar').addEventListener('keyup', searchGames);
   document.getElementById('platformSearch').addEventListener('keyup', searchGames);
-
-  document.querySelector('button[onclick="addGame()"]').addEventListener('click', addGame);
+  document.getElementById('addGameBtn').addEventListener('click', addGame);
 
   fetchGames();
 
-  // Expose addGame for inline button
   window.addGame = addGame;
   window.hideToast = hideToast;
 });

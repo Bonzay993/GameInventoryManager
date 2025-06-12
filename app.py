@@ -1,10 +1,12 @@
 import os
 import requests
+import bs4
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from pymongo import MongoClient
 from bson.json_util import dumps
 from bson.objectid import ObjectId
+from bs4 import BeautifulSoup
 
 if os.path.exists("env.py"):
     import env
@@ -19,6 +21,10 @@ app.secret_key = os.environ.get("SECRET_KEY")
 client = MongoClient(app.config["MONGO_URI"])
 db = client[app.config["MONGO_DBNAME"]]
 games_collection = db['games']
+
+
+
+
 
 @app.route('/')
 def index():
@@ -72,22 +78,32 @@ def search_games():
 
 @app.route('/add', methods=['POST'])
 def add_game():
-    data = request.get_json()
-    name = data.get('name')
-    platform = data.get('platform')
+    data = request.json
+    name = data.get('name', '').strip()
+    platform = data.get('platform', '').strip()
+    image_url = data.get('image_url', '').strip() or None
+
     if not name or not platform:
-        return jsonify({"status": "error", "message": "Missing name or platform"}), 400
+        return jsonify({'message': 'Name and platform are required.'}), 400
 
-    existing = games_collection.find_one({
-        "name": {"$regex": f"^{name}$", "$options": "i"},
-        "platform": {"$regex": f"^{platform}$", "$options": "i"}
+    # Case-insensitive check
+    existing = db.games.find_one({
+        'name': {'$regex': f'^{name}$', '$options': 'i'},
+        'platform': {'$regex': f'^{platform}$', '$options': 'i'}
     })
-    if existing:
-        return jsonify({"status": "error", "message": "Game already exists"}), 400
 
-    game_doc = {"name": name, "platform": platform}
-    games_collection.insert_one(game_doc)
-    return jsonify({"status": "success"}), 201
+    if existing:
+        return jsonify({'message': 'Game already exists for this platform.'}), 400
+
+    game = {
+        'name': name,
+        'platform': platform,
+        'image_url': image_url
+    }
+
+    db.games.insert_one(game)
+    return jsonify({'message': 'Game added successfully!'}), 201
+
 
 @app.route('/delete/<game_id>', methods=['DELETE'])
 def delete_game(game_id):
