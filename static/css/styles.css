@@ -57,7 +57,7 @@ h1 {
   justify-content: center;
   gap: 12px;
   margin: 20px auto 40px auto;
-  max-width: 100%;
+  max-width: 50%;
   padding: 0 10px;
 }
 
@@ -239,6 +239,7 @@ p {
     flex-direction: column;
     align-items: stretch;
     gap: 10px;
+    max-width:70%;
   }
 
   .gameItem {
