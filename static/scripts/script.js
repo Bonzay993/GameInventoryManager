@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const list = document.getElementById('gameList');
     list.innerHTML = '';
     if (games.length === 0) {
-      list.innerHTML = '<p class="no-games">No games found.</p>';
+      list.innerHTML = '<p class="no-games centered-message">No games found.</p>';
       return;
     }
 
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function searchGames() {
     const query = document.getElementById('searchBar').value.trim();
-    const platform = document.getElementById('platform').value;
+    const platform = document.getElementById('platformSearch').value; // ← fixed here
 
     let url = '/search?';
     if (query) url += `query=${encodeURIComponent(query)}&`;
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const res = await fetch(url);
     const games = await res.json();
     displayGames(games);
-  }
+}
 
   async function addGame() {
     const name = document.getElementById('gameName').value.trim();
