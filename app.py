@@ -9,6 +9,7 @@ from bson.objectid import ObjectId
 if os.path.exists("env.py"):
     import env
 
+
 app = Flask(__name__)
 
 
@@ -20,6 +21,8 @@ app.secret_key = os.environ.get("SECRET_KEY")
 client = MongoClient(app.config["MONGO_URI"])
 db = client[app.config["MONGO_DBNAME"]]
 games_collection = db['games']
+
+
 
 @app.route('/')
 def index():
@@ -65,6 +68,6 @@ def delete_game(game_id):
     else:
         return jsonify({"status": "error", "message": "Game not found"}), 404
 
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # use PORT env var from Heroku
+    app.run(host='0.0.0.0', port=port)

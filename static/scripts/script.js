@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   let gameIdToDelete = null;
 
-  const RAWG_API_KEY = 'YOUR_RAWG_API_KEY_HERE'; // <-- replace with your RAWG API key
+  const RAWG_API_KEY = 'df23d9d8129541199e5b8fce67dfaf6e'; // <-- replace with your RAWG API key
   const PLACEHOLDER_IMG = 'https://via.placeholder.com/250x140?text=No+Image'; // fallback image
 
   function showToast(message, type = 'success', duration = 3000) {
