@@ -42,8 +42,6 @@ h1 {
   border-radius: 8px;
   flex: 1 1 auto;
   min-width: 150px;
-  min-height: 40px;
-  margin: 0 auto;
   width: 48%;
 }
 
@@ -51,7 +49,6 @@ h1 {
   width: 20%;
 }
 
-/* Wrapper for form + toast positioning */
 .form-toast-wrapper {
   position: relative;
   max-width: 50%;
@@ -64,8 +61,8 @@ h1 {
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
-  max-width:50%;
-  margin:0 auto;
+  max-width: 50%;
+  margin: 0 auto;
 }
 
 .addForm input, .addForm button, .addForm select.platform {
@@ -152,13 +149,11 @@ h1 {
   background-color: #e04343;
 }
 
-/* Toast styles */
 .toast {
   position: absolute;
   left: 50%;
   transform: translateX(-50%) translateY(20px);
   max-width: 300px;
-  width: auto;
   padding: 12px 20px;
   display: flex;
   align-items: center;
@@ -188,18 +183,20 @@ h1 {
 .edit-container {
   max-width: 600px;
   margin: 30px auto;
-  display: grid;
-  grid-template-columns: 150px 1fr;
+  
+  display:flex;
   gap: 15px 20px;
   align-items: center;
   background-color: var(--card-bg);
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 255, 204, 0.15);
+  flex-direction: column
 }
 
-.edit-container img{
-  margin:0 auto;
+.edit-container img {
+  margin: 0 auto;
+  align-items: center;
 }
 
 .edit-container label {
@@ -209,8 +206,7 @@ h1 {
 }
 
 .edit-container input,
-.edit-container select,
-.edit-container button.delete-btn {
+.edit-container select {
   width: 100%;
   padding: 10px 12px;
   font-size: 1rem;
@@ -223,11 +219,14 @@ h1 {
 
 .edit-container button.save-btn {
   grid-column: 2 / 3;
-  justify-self: start;
   background-color: var(--accent);
   color: #000;
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
+  font-weight: bold;
   transition: background-color 0.3s ease;
 }
 
@@ -235,33 +234,31 @@ h1 {
   background-color: #00e6b8;
 }
 
-.edit-container button.delete-btn {
+.delete-btn {
   background-color: var(--error);
   color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
+  font-weight: bold;
   transition: background-color 0.3s ease;
 }
 
-.edit-container button.delete-btn:hover {
+.delete-btn:hover {
   background-color: #e04343;
-}
-
-/* Back to inventory button container */
-.back-btn-container {
-  max-width: 600px;
-  margin: 20px auto 40px;
-  text-align: center;
 }
 
 .back-btn {
   background-color: var(--accent);
   color: #000;
-  border: none;
-  padding: 12px 30px;
-  font-size: 1.1rem;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  padding: 12px 20px;
   border-radius: 8px;
-  cursor: pointer;
+  font-weight: bold;
+  cursor:pointer;
   transition: background-color 0.3s ease;
 }
 
@@ -269,18 +266,28 @@ h1 {
   background-color: #00e6b8;
 }
 
-/* General p styling */
+.button-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin: 30px auto;
+  flex-direction: row;
+}
+
+.button-row button,
+.button-row a.back-btn {
+  flex: 1 1 200px;
+  max-width: 350px;
+  font-size: 1rem;
+}
+
+
 p {
   text-align: center;
   font-size: 1.2rem;
   color: var(--error);
 }
 
-
-
-
-
-/* Confirm delete toast */
 .confirm-toast {
   position: fixed;
   bottom: 20px;
@@ -303,18 +310,15 @@ p {
   word-break: break-word;
 }
 
-
-/* Buttons container */
 .button-container {
   display: flex;
   flex-direction: row;
-  gap: 12px;              /* spacing between buttons */
+  gap: 12px;
   width: 100%;
   justify-content: center;
-  flex-wrap: wrap;        /* allow wrapping on small screens */
+  flex-wrap: wrap;
 }
 
-/* Individual buttons */
 .confirm-btn {
   background: #222;
   border: none;
@@ -336,7 +340,7 @@ p {
   display: flex !important;
   flex-direction: column;
   align-items: center;
-  padding-top: 7vh; /* Adjust this value as needed */
+  padding-top: 7vh;
   min-height: 60vh;
 }
 
@@ -345,105 +349,65 @@ p {
   color: var(--error);
 }
 
-/* Responsive Enhancements */
 @media (max-width: 768px) {
   #searchContainer {
     flex-direction: column;
     width: 100%;
   }
 
-  #searchBar,
-  #platformSearch {
+  #searchBar, #platformSearch {
     width: 90% !important;
   }
 
   .form-toast-wrapper {
     max-width: 100%;
-    margin: 0 auto;
-    padding: 0;
   }
 
   .toast {
     position: fixed;
-    
     bottom: 0;
     left: 0;
     width: 100%;
-    max-width: 100%;
-    transform: none;
     border-radius: 0;
-    box-sizing: border-box;
-    padding: 12px 20px;
+    transform: none;
     margin: 0;
   }
 
   .confirm-toast {
-    position: fixed;
-    bottom: 50px; /* or whatever height to stay above toast */
+    bottom: 50px;
     left: 0;
     width: 100%;
-    max-width: 100%;
-    transform: none;
     border-radius: 0;
-    padding: 12px 20px;
-    margin: 0;
-  }
-
-  .toast.show {
-    transform: translateY(0);
+    transform: none;
   }
 
   .addForm {
     flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
     max-width: 70%;
   }
 
   .gameItem {
     height: auto;
-    font-size: 1rem;
   }
 
   .gameItem img {
     height: 200px;
   }
 
- 
-}
-
-@media (max-width: 600px) {
-  .addForm input,
-  .addForm button,
-  .addForm select.platform {
-    flex: 1 1 100%;
-  }
-}
-
-@media (max-width: 480px) {
-  h1 {
-    font-size: 1.6rem;
+  .button-row {
+    flex-direction: column;
   }
 
-  .addForm input,
-  .addForm button,
-  .addForm select.platform {
-    font-size: 1rem;
-    padding: 10px;
-  }
-
-  .gameItem img {
-    height: 180px;
+  .button-row button,
+  .button-row a.back-btn {
+    width: 100%;
   }
 
   .button-container {
     flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
   }
 
   .confirm-btn {
     width: 100%;
-    text-align: center;
   }
 }

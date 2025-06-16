@@ -49,7 +49,23 @@ document.addEventListener('DOMContentLoaded', () => {
   if (confirmYesBtn && confirmNoBtn) {
     confirmYesBtn.addEventListener('click', async () => {
       if (!gameIdToDelete) return;
-      const res = await fetch(`/delete/${gameIdToDelete}`, { method: 'DELETE' });
+
+      // Prompt user for deletion code
+      const userCode = prompt("Enter deletion code to confirm:");
+
+      if (!userCode) {
+        showToast("Deletion code is required.", "error");
+        return;
+      }
+
+      // Send the code along with the delete request
+      const res = await fetch(`/delete/${gameIdToDelete}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ deletion_code: userCode })
+      });
 
       if (res.ok) {
         showToast("Game deleted.", 'success');
@@ -256,7 +272,6 @@ document.addEventListener('DOMContentLoaded', () => {
     confirmSaveNo.addEventListener('click', () => {
       confirmSaveToast.classList.remove('show');
       confirmSaveToast.style.display = 'none';
-      confirmSaveToast.style.background = '#222';
       confirmSaveYes.style.display = 'inline-block';
       confirmSaveNo.style.display = 'inline-block';
     });
