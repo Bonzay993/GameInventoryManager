@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Edit Game</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <h1>Edit Game</h1>
+
+  <div class="edit-container">
+    {% if game.image_url %}
+      <img src="{{ game.image_url }}" alt="Game Image" style="grid-column: 1 / -1; max-width: 100%; border-radius: 10px; margin-bottom: 20px;">
+    {% else %}
+      <p style="grid-column: 1 / -1; text-align: center; font-style: italic; color: var(--error); margin-bottom: 20px;">
+        No image URL provided.
+      </p>
+    {% endif %}
+
+    <!-- Edit form with id and proper button -->
+    <form id="edit-form" method="POST" style="grid-column: 1 / -1;">
+      <label for="name">Game Name:</label>
+      <input id="name" type="text" name="name" value="{{ game.name }}" required>
+
+      <label for="platform">Platform:</label>
+      <select id="platform" name="platform" required>
+        {% for p in ['PS1', 'PS2', 'PS3', 'PS4', 'PS5', 'OG XBOX', 'XBOX 360', 'XBOX ONE', 'SERIES S', 'SERIES X', 'Nintendo Switch', 'PSP'] %}
+          <option value="{{ p }}" {% if game.platform.lower() == p.lower() %}selected{% endif %}>{{ p }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="image_url">Image URL:</label>
+      <input id="image_url" type="text" name="image_url" value="{{ game.image_url }}">
+
+      <div></div> <!-- empty cell for grid alignment -->
+      <button type="button" id="save-btn" class="save-btn">Save Changes</button>
+    </form>
+
+    <form method="POST" action="{{ url_for('delete_game_web', game_id=game._id) }}" onsubmit="return confirm('Are you sure you want to delete this game?');" style="grid-column: 1 / -1;">
+      <button type="submit" class="delete-btn" style="margin-top: 20px;">Delete Game</button>
+    </form>
+
+    <div class="back-btn-container">
+      <a href="{{ url_for('index') }}">
+        <button class="back-btn" type="button">⬅️ Back to Inventory</button>
+      </a>
+    </div>
+  </div>
+
+  <!-- Confirm save toast -->
+  <div id="confirm-save-toast" class="confirm-toast" style="display:none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #222; color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px #00ffcc; z-index: 9999; flex-direction: column; align-items: center; gap: 10px;">
+    <p>Are you sure you want to save changes?</p>
+    <div style="display: flex; gap: 15px;">
+      <button id="confirm-save-yes" style="background:#00ffcc; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; color:#000;">Yes</button>
+      <button id="confirm-save-no" style="background:#555; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; color:#fff;">No</button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='scripts/script.js') }}"></script>
+</body>
+</html>

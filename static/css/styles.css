@@ -185,6 +185,90 @@ h1 {
   background-color: #dc3545;
 }
 
+.edit-container {
+  max-width: 600px;
+  margin: 30px auto;
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 15px 20px;
+  align-items: center;
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 255, 204, 0.15);
+}
+
+.edit-container img{
+  margin:0 auto;
+}
+
+.edit-container label {
+  justify-self: end;
+  font-weight: bold;
+  color: var(--accent);
+}
+
+.edit-container input,
+.edit-container select,
+.edit-container button.delete-btn {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background-color: #2a2a2a;
+  color: var(--text-color);
+  box-sizing: border-box;
+}
+
+.edit-container button.save-btn {
+  grid-column: 2 / 3;
+  justify-self: start;
+  background-color: var(--accent);
+  color: #000;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.edit-container button.save-btn:hover {
+  background-color: #00e6b8;
+}
+
+.edit-container button.delete-btn {
+  background-color: var(--error);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.edit-container button.delete-btn:hover {
+  background-color: #e04343;
+}
+
+/* Back to inventory button container */
+.back-btn-container {
+  max-width: 600px;
+  margin: 20px auto 40px;
+  text-align: center;
+}
+
+.back-btn {
+  background-color: var(--accent);
+  color: #000;
+  border: none;
+  padding: 12px 30px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.back-btn:hover {
+  background-color: #00e6b8;
+}
+
 /* General p styling */
 p {
   text-align: center;

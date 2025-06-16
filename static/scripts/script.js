@@ -2,10 +2,13 @@ document.addEventListener('DOMContentLoaded', () => {
   let gameIdToDelete = null;
   const PLACEHOLDER_IMG = '/static/img/no-image.png';
 
+  // Toast show/hide helpers
   function showToast(message, type = 'success', duration = 3000) {
     const toast = document.getElementById('toast');
     const icon = document.getElementById('toast-icon');
     const msg = document.getElementById('toast-message');
+
+    if (!toast || !icon || !msg) return;
 
     icon.textContent = type === 'error' ? '❌' : '✅';
     msg.textContent = message;
@@ -17,41 +20,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function hideToast() {
     const toast = document.getElementById('toast');
-    toast.className = 'toast';
+    if (toast) toast.className = 'toast';
   }
 
+  // Confirm delete dialog
   function showConfirmDelete(id) {
     gameIdToDelete = id;
     const confirmToast = document.getElementById('confirm-toast');
-    confirmToast.style.display = 'flex';
-    confirmToast.classList.add('show');
+    if (confirmToast) {
+      confirmToast.style.display = 'flex';
+      confirmToast.classList.add('show');
+    }
   }
 
   function hideConfirmToast() {
     const confirmToast = document.getElementById('confirm-toast');
-    confirmToast.classList.remove('show');
-    confirmToast.style.display = 'none';
+    if (confirmToast) {
+      confirmToast.classList.remove('show');
+      confirmToast.style.display = 'none';
+    }
     gameIdToDelete = null;
   }
 
-  document.getElementById('confirm-yes').addEventListener('click', async () => {
-    if (!gameIdToDelete) return;
-    const res = await fetch(`/delete/${gameIdToDelete}`, { method: 'DELETE' });
+  // Confirm delete buttons
+  const confirmYesBtn = document.getElementById('confirm-yes');
+  const confirmNoBtn = document.getElementById('confirm-no');
 
-    if (res.ok) {
-      showToast("Game deleted.", 'success');
-      fetchGames();
-    } else {
-      const error = await res.json();
-      showToast(error.message || "Failed to delete game.", 'error');
-    }
+  if (confirmYesBtn && confirmNoBtn) {
+    confirmYesBtn.addEventListener('click', async () => {
+      if (!gameIdToDelete) return;
+      const res = await fetch(`/delete/${gameIdToDelete}`, { method: 'DELETE' });
 
-    hideConfirmToast();
-  });
+      if (res.ok) {
+        showToast("Game deleted.", 'success');
+        fetchGames();
+      } else {
+        const error = await res.json();
+        showToast(error.message || "Failed to delete game.", 'error');
+      }
 
-  document.getElementById('confirm-no').addEventListener('click', () => {
-    hideConfirmToast();
-  });
+      hideConfirmToast();
+    });
+
+    confirmNoBtn.addEventListener('click', () => {
+      hideConfirmToast();
+    });
+  }
 
   async function fetchGameImage(game) {
     if (game.image_url) return game.image_url;
@@ -66,18 +80,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function displayGames(games) {
     const list = document.getElementById('gameList');
+    if (!list) return;
+
     list.innerHTML = '';
     if (games.length === 0) {
       list.classList.add('no-games');
       list.innerHTML = '<p>No games found.</p>';
-  return;
-} else {
-  list.classList.remove('no-games');
-}
+      return;
+    } else {
+      list.classList.remove('no-games');
+    }
 
     for (const game of games) {
       const item = document.createElement('div');
       item.className = 'gameItem';
+      item.style.cursor = 'pointer';
 
       const img = document.createElement('img');
       img.alt = `${game.name} cover`;
@@ -106,9 +123,16 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.style.borderRadius = '5px';
       btn.style.cursor = 'pointer';
 
-      btn.onclick = () => {
+      // Prevent redirect when clicking delete
+      btn.onclick = (e) => {
+        e.stopPropagation();
         showConfirmDelete(game._id["$oid"]);
       };
+
+      // Redirect when clicking the whole item
+      item.addEventListener('click', () => {
+        window.location.href = `/game/${game._id["$oid"]}`;
+      });
 
       item.appendChild(img);
       item.appendChild(name);
@@ -118,8 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function searchGames() {
-    const query = document.getElementById('searchBar').value.trim();
-    const platform = document.getElementById('platformSearch').value; // ← fixed here
+    const query = document.getElementById('searchBar')?.value.trim() || '';
+    const platform = document.getElementById('platformSearch')?.value || '';
 
     let url = '/search?';
     if (query) url += `query=${encodeURIComponent(query)}&`;
@@ -128,12 +152,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const res = await fetch(url);
     const games = await res.json();
     displayGames(games);
-}
+  }
 
   async function addGame() {
-    const name = document.getElementById('gameName').value.trim();
-    const platform = document.getElementById('platform').value.trim();
-    const imageUrl = document.getElementById('imageUrl').value.trim();
+    const name = document.getElementById('gameName')?.value.trim();
+    const platform = document.getElementById('platform')?.value.trim();
+    const imageUrl = document.getElementById('imageUrl')?.value.trim();
 
     if (!name || !platform) {
       showToast("Please enter both a game name and platform.", 'error');
@@ -150,21 +174,91 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (res.ok) {
       showToast("Game added successfully!", 'success');
-      document.getElementById('gameName').value = '';
-      document.getElementById('platform').value = '';
-      document.getElementById('imageUrl').value = '';
+      if (document.getElementById('gameName')) document.getElementById('gameName').value = '';
+      if (document.getElementById('platform')) document.getElementById('platform').value = '';
+      if (document.getElementById('imageUrl')) document.getElementById('imageUrl').value = '';
       fetchGames();
     } else {
       showToast(result.message || "Error adding game.", 'error');
     }
   }
 
-  document.getElementById('searchBar').addEventListener('keyup', searchGames);
-  document.getElementById('platformSearch').addEventListener('change', searchGames);  // changed here
-  document.getElementById('addGameBtn').addEventListener('click', addGame);
+  const searchBar = document.getElementById('searchBar');
+  if (searchBar) searchBar.addEventListener('keyup', searchGames);
+
+  const platformSearch = document.getElementById('platformSearch');
+  if (platformSearch) platformSearch.addEventListener('change', searchGames);
+
+  const addGameBtn = document.getElementById('addGameBtn');
+  if (addGameBtn) addGameBtn.addEventListener('click', addGame);
 
   fetchGames();
 
-  window.addGame = addGame;
-  window.hideToast = hideToast;
+  // --- Confirm Save Changes logic with AJAX ---
+  const saveBtn = document.getElementById('save-btn');
+  const confirmSaveToast = document.getElementById('confirm-save-toast');
+  const confirmSaveYes = document.getElementById('confirm-save-yes');
+  const confirmSaveNo = document.getElementById('confirm-save-no');
+  const editForm = document.getElementById('edit-form');
+
+  if (saveBtn && confirmSaveToast && confirmSaveYes && confirmSaveNo && editForm) {
+    saveBtn.addEventListener('click', () => {
+      confirmSaveToast.style.display = 'flex';
+      confirmSaveToast.classList.add('show');
+      confirmSaveToast.querySelector('p').textContent = 'Are you sure you want to save changes?';
+      confirmSaveYes.style.display = 'inline-block';
+      confirmSaveNo.style.display = 'inline-block';
+      confirmSaveToast.style.background = '#222';
+    });
+
+    confirmSaveYes.addEventListener('click', async () => {
+      confirmSaveYes.style.display = 'none';
+      confirmSaveNo.style.display = 'none';
+
+      confirmSaveToast.querySelector('p').textContent = 'Saving changes...';
+
+      const formData = new FormData(editForm);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const response = await fetch(editForm.action, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          confirmSaveToast.querySelector('p').textContent = 'Changes saved successfully!';
+          confirmSaveToast.style.background = '#222';
+
+          setTimeout(() => {
+            confirmSaveToast.classList.remove('show');
+            confirmSaveToast.style.display = 'none';
+            confirmSaveYes.style.display = 'inline-block';
+            confirmSaveNo.style.display = 'inline-block';
+          }, 3000);
+        } else {
+          const errorData = await response.json();
+          confirmSaveToast.querySelector('p').textContent = errorData.message || 'Failed to save changes.';
+          confirmSaveToast.style.background = '#800';
+          confirmSaveNo.style.display = 'inline-block';
+        }
+      } catch (error) {
+        confirmSaveToast.querySelector('p').textContent = 'Error saving changes.';
+        confirmSaveToast.style.background = '#800';
+        confirmSaveNo.style.display = 'inline-block';
+      }
+    });
+
+    confirmSaveNo.addEventListener('click', () => {
+      confirmSaveToast.classList.remove('show');
+      confirmSaveToast.style.display = 'none';
+      confirmSaveToast.style.background = '#222';
+      confirmSaveYes.style.display = 'inline-block';
+      confirmSaveNo.style.display = 'inline-block';
+    });
+  }
 });

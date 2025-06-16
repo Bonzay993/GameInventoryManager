@@ -7,6 +7,8 @@ from pymongo import MongoClient
 from bson.json_util import dumps
 from bson.objectid import ObjectId
 from bs4 import BeautifulSoup
+from bson.errors import InvalidId
+from flask import abort
 
 if os.path.exists("env.py"):
     import env
@@ -23,19 +25,88 @@ db = client[app.config["MONGO_DBNAME"]]
 games_collection = db['games']
 
 
-
-
-
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+@app.route('/game/<game_id>', methods=['GET', 'POST'])
+def edit_game_page(game_id):
+    try:
+        object_id = ObjectId(game_id)
+    except InvalidId:
+        return jsonify({"message": "Invalid game ID"}), 400
+
+    if request.method == 'POST':
+        # Accept JSON POST now for AJAX
+        if request.is_json:
+            data = request.get_json()
+            name = data.get('name', '').strip()
+            platform = data.get('platform', '').strip()
+            image_url = data.get('image_url', '').strip() or None
+
+            if not name or not platform:
+                return jsonify({"message": "Name and platform are required."}), 400
+
+            update_result = games_collection.update_one(
+                {"_id": object_id},
+                {"$set": {
+                    "name": name,
+                    "platform": platform,
+                    "image_url": image_url
+                }}
+            )
+            if update_result.matched_count == 0:
+                return jsonify({"message": "Game not found."}), 404
+
+            return jsonify({"message": "Changes saved successfully!"}), 200
+
+        # Fallback for normal form POST if needed (optional)
+        else:
+            name = request.form.get('name', '').strip()
+            platform = request.form.get('platform', '').strip()
+            image_url = request.form.get('image_url', '').strip() or None
+
+            if not name or not platform:
+                return "Name and platform are required.", 400
+
+            games_collection.update_one(
+                {"_id": object_id},
+                {"$set": {
+                    "name": name,
+                    "platform": platform,
+                    "image_url": image_url
+                }}
+            )
+            # Return rendered page on normal form submit
+            return render_template('edit_game.html', game=games_collection.find_one({"_id": object_id}))
+
+    # GET request fallback (existing)
+    game = games_collection.find_one({"_id": object_id})
+    if not game:
+        return "Game not found", 404
+    return render_template('edit_game.html', game=game)
+    # GET request fallback
+    game = games_collection.find_one({"_id": object_id})
+    if not game:
+        return "Game not found", 404
+    return render_template('edit_game.html', game=game)
+
+
+
+@app.route('/game/<game_id>/delete', methods=['POST'])
+def delete_game_web(game_id):  # Renamed this function
+    games_collection.delete_one({"_id": ObjectId(game_id)})
+    return render_template('index.html')
+
 
 @app.route('/games', methods=['GET'])
 def get_games():
     games = list(games_collection.find())
     return dumps(games), 200, {'Content-Type': 'application/json'}
 
-@app.route('/game-image', methods=['GET'])  # <-- fixed here
+
+@app.route('/game-image', methods=['GET'])
 def get_game_image():
     name = request.args.get('name')
     if not name:
@@ -56,6 +127,7 @@ def get_game_image():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 @app.route('/search', methods=['GET'])
 def search_games():
     query = request.args.get('query', '').strip()
@@ -69,12 +141,9 @@ def search_games():
     if platform:
         mongo_query["platform"] = {"$regex": platform, "$options": "i"}
 
-    print("Mongo query:", mongo_query)  # Add this line
-
     results = list(games_collection.find(mongo_query))
-    print(f"Found {len(results)} results")  # And this
-
     return dumps(results), 200, {'Content-Type': 'application/json'}
+
 
 @app.route('/add', methods=['POST'])
 def add_game():
@@ -86,7 +155,6 @@ def add_game():
     if not name or not platform:
         return jsonify({'message': 'Name and platform are required.'}), 400
 
-    # Case-insensitive check
     existing = db.games.find_one({
         'name': {'$regex': f'^{name}$', '$options': 'i'},
         'platform': {'$regex': f'^{platform}$', '$options': 'i'}
@@ -106,12 +174,13 @@ def add_game():
 
 
 @app.route('/delete/<game_id>', methods=['DELETE'])
-def delete_game(game_id):
+def delete_game_api(game_id):  # Renamed this function
     result = games_collection.delete_one({"_id": ObjectId(game_id)})
     if result.deleted_count == 1:
         return jsonify({"status": "success"}), 200
     else:
         return jsonify({"status": "error", "message": "Game not found"}), 404
+
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
