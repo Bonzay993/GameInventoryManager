@@ -88,7 +88,12 @@ def delete_game_api(game_id):
     if not code or code != os.environ.get('DELETION_CODE'):
         return jsonify({"status": "error", "message": "Invalid deletion code."}), 403
 
-    result = games_collection.delete_one({"_id": ObjectId(game_id)})
+    try:
+        object_id = ObjectId(game_id)
+    except InvalidId:
+        return jsonify({"message": "Invalid game ID"}), 400
+
+    result = games_collection.delete_one({"_id": object_id})
     if result.deleted_count == 1:
         return jsonify({"status": "success"}), 200
     else:
