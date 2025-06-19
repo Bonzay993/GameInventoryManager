@@ -181,7 +181,6 @@ h1 {
 }
 
 .edit-container {
-  max-width: 600px;
   margin: 30px auto;
   
   display:flex;
@@ -194,9 +193,13 @@ h1 {
   flex-direction: column
 }
 
-.edit-container img {
+.game-image {
   margin: 0 auto;
   align-items: center;
+  width:25%;
+  grid-column: 1 / -1; 
+  border-radius: 10px; 
+  margin-bottom: 20px;
 }
 
 .edit-container label {
@@ -229,6 +232,9 @@ h1 {
   font-weight: bold;
   transition: background-color 0.3s ease;
 }
+
+/* EDIT FORM */
+
 
 .edit-container button.save-btn:hover {
   background-color: #00e6b8;
@@ -410,4 +416,32 @@ p {
   .confirm-btn {
     width: 100%;
   }
+
+  .edit-container{
+    width:90%;
+  }
+
+  .game-image {
+    width: 100vw;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto 20px auto;
+     border: 5px solid red;
+  }
+
+  #edit-form{
+  display:flex;
+  width:100%;
+  gap:20px;
+  flex-direction: column;
+  }
+
+  #edit-form label{
+    font-size:300%;
+    }
+
+  #edit-form input , #edit-form select{
+    font-size: 250%;
+  }
+
 }
