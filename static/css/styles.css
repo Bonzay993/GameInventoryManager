@@ -400,10 +400,7 @@ p {
     height: 200px;
   }
 
-  .button-row {
-    flex-direction: column;
-  }
-
+ 
   .button-row button,
   .button-row a.back-btn {
     width: 100%;
@@ -422,11 +419,11 @@ p {
   }
 
   .game-image {
-    width: 100vw;
+    width: 100%;
     max-width: 100%;
     display: block;
     margin: 0 auto 20px auto;
-     border: 5px solid red;
+     
   }
 
   #edit-form{
@@ -437,11 +434,11 @@ p {
   }
 
   #edit-form label{
-    font-size:300%;
+    font-size:200%;
     }
 
   #edit-form input , #edit-form select{
-    font-size: 250%;
+    font-size: 200%;
   }
 
 }
