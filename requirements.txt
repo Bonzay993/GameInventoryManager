@@ -10,3 +10,4 @@ sendgrid==6.11.0
 Flask-Cors==4.0.0
 requests==2.31.0
 beautifulsoup4==4.12.3
+pytest==8.1.1
