@@ -12,7 +12,14 @@ body {
   background: radial-gradient(circle at top left, #1e2a38, #0f2027);
   color: var(--text-color);
   padding: 2vw;
+  overflow-x: hidden;
 }
+
+
+* {
+  box-sizing: border-box;
+}
+
 
 h1 {
   text-align: center;
