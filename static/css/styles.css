@@ -6,6 +6,16 @@
   --error: #ff4d4d;
 }
 
+
+* {
+  box-sizing: border-box;
+}
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+
 body {
   margin: 0;
   font-family: 'Orbitron', sans-serif;
@@ -15,10 +25,6 @@ body {
   overflow-x: hidden;
 }
 
-
-* {
-  box-sizing: border-box;
-}
 
 
 h1 {
