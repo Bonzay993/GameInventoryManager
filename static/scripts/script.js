@@ -98,6 +98,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const list = document.getElementById('gameList');
     if (!list) return;
 
+    const headerEl = document.getElementById('platformHeader');
+    const selectedPlatform = document.getElementById('platformSearch')?.value || '';
+    if (headerEl) {
+      if (selectedPlatform) {
+        headerEl.textContent = `${games.length} ${selectedPlatform} Games Collected`;
+        headerEl.style.display = 'block';
+      } else {
+        headerEl.textContent = '';
+        headerEl.style.display = 'none';
+      }
+    }
+
     list.innerHTML = '';
     if (games.length === 0) {
       list.classList.add('no-games');

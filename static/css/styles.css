@@ -49,6 +49,16 @@ h1 {
   width: 20%;
 }
 
+.platform-header {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 1.5rem;
+  color: var(--accent);
+  display: none;
+  font-family: sans-serif;
+}
+
+
 .form-toast-wrapper {
   position: relative;
   max-width: 50%;
